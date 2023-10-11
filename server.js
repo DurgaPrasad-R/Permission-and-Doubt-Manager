@@ -5,6 +5,7 @@ const passwordHash = require('password-hash');
 const session = require('express-session');
 var serviceAccount = require("./Key.json");
 const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
 const app = express()
 const port = 3000
 
@@ -165,14 +166,15 @@ app.post('/request-form-data-upload', upload.single('documents'), async (req, re
     if (!imageFile) {
       return res.status(400).send('No file uploaded.');
     }
-
+    const uniqueId = uuidv4();
     const userDocument = await db.collection('Users').doc(department).collection(department).doc(studentEmail);
     const userDef = await userDocument.get()
     const imagepath = '/uploads/' + imageFile.filename;
     let requestData;
     if (to_date == from_date){
       requestData = {
-          regd_no:regd_no,
+          id: uniqueId,
+          regd_no:studentEmail.substring(0, 10),
           reason:reason,
           from_date:from_date,
           to_date:to_date,
@@ -184,6 +186,8 @@ app.post('/request-form-data-upload', upload.single('documents'), async (req, re
       }
       else{
         requestData = {
+          id: uniqueId,
+          regd_no:studentEmail.substring(0, 10),
           reason:reason,
           from_date:from_date,
           to_date:to_date,
@@ -194,7 +198,7 @@ app.post('/request-form-data-upload', upload.single('documents'), async (req, re
 
     // Update the student's requests in their own document
     const studentRequestsRef = userDocument.collection('requests');
-    studentRequestsRef.add(requestData);
+    studentRequestsRef.doc(uniqueId).set(requestData);
 
     // Retrieve the HOD email from the mapping
     const hodEmail = departmentToHODMapping[department];
@@ -203,7 +207,7 @@ app.post('/request-form-data-upload', upload.single('documents'), async (req, re
       // Duplicate the request data to the HOD's document
       const hodDocumentRef = db.collection('Users').doc(department).collection(department).doc(hodEmail);
       const hodRequestsRef = hodDocumentRef.collection('requests');
-      hodRequestsRef.add(requestData);
+      hodRequestsRef.doc(uniqueId).set(requestData);
     }
 
     res.send('Success');
@@ -237,10 +241,10 @@ app.get('/student-requests', async (req, res) => {
 app.get('/hod-requests', async (req, res) => {
   if (req.session.userData && req.session.userData.Role === 'HOD') {
     const department = req.session.userData.Department;
-    
+    const hodmail = departmentToHODMapping[department];
     // Retrieve the requests for the HOD's department
-    const requestsRef = db.collection('Users').doc(department).collection(department);
-
+    const requestsRef = db.collection('Users').doc(department).collection(department).doc(hodmail).collection('requests');
+    
     const snapshot = await requestsRef.get();
 
     const requests = [];
@@ -259,15 +263,19 @@ app.post('/hod-requests/approve', async (req, res) => {
     const department = req.session.userData.Department;
     const requestId = req.body.requestId;
     const action = req.body.action; // "approve" or "deny"
-
+    const hodmail = departmentToHODMapping[department]
     // Update the request status based on the action
-    const requestsRef = db.collection('Users').doc(department).collection(department);
+    const requestsRef = db.collection('Users').doc(department).collection(department).doc(hodmail).collection('requests');
     const requestDoc = requestsRef.doc(requestId);
-
+    const studentEmail = req.body.regd_no+"@vishnu.edu.in";
+    const StudentrequestsRef = db.collection('Users').doc(department).collection(department).doc(studentEmail).collection('requests');
+    const student = StudentrequestsRef.doc(requestId);
     if (action === 'approve') {
       await requestDoc.update({ status: 'approved' });
+      await student.update({status: 'approved'})
     } else if (action === 'deny') {
       await requestDoc.update({ status: 'denied' });
+      await student.update({status: 'denied'})
     }
 
     // Redirect back to the HOD requests page
