@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+    <h1>HOD Requests</h1>
+    <ul>
+        <% requests.forEach(request => { %>
+            <li>
+                Request ID: <%= request.id %><br>
+                Reason: <%= request.reason %><br>
+                From Date: <%= request.from_date %><br>
+                To Date: <%= request.to_date %><br>
+                Status: <%= request.status %>
+                <form action="/hod-requests/approve" method="post">
+                    <input type="hidden" name="requestId" value="<%= request.id %>">
+                    <button type="submit" name="action" value="approve">Approve</button>
+                    <button type="submit" name="action" value="deny">Deny</button>
+                </form>
+                <hr>
+            </li>
+        <% }); %>
+    </ul>
+</body>
+</html>

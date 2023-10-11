@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login: AntiqueExchange</title>
+    <title>Login</title>
     <style>
         * {
             padding: 0;
@@ -33,7 +33,7 @@
             font-weight: 600;
         }
 
-        input {
+        input{
             margin: 10px 0;
             width: 25vmax;
             height: 5vmin;
@@ -77,8 +77,12 @@
                 <img src="assets/images/profile.png" alt="">
             </div>
             <div class="inputs">
-                <label for="regd_no">Enter your regd. no:</label><br>
-                <input type="text" name="regd_no" placeholder="Enter your regd.no: " required>
+                <label for="email">Enter your email:</label><br>
+                <input type="email" name="Email" id="email" placeholder="Enter your email:" required>
+            </div>
+            <div class="inputs">
+                <label for="name">Enter your Department:</label><br>
+                <input type="text" name="Department" id="Department" placeholder="Enter your Department:" required>
             </div>
             <div class="inputs">
                 <label for="password">Enter your password:</label><br>

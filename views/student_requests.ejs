@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Requests</title>
+</head>
+<body>
+    <h1>Your Requests</h1>
+    <ul>
+        <% requests.forEach(request => { %>
+            <li>
+                Request ID: <%= request.id %><br>
+                Reason: <%= request.reason %><br>
+                From Date: <%= request.from_date %><br>
+                To Date: <%= request.to_date %><br>
+                Status: <%= request.status %> <br>
+                Document Attached: <% if (request.imgPath) { %>
+                    <a href="<%= request.imgPath %>" target="_blank">View Document</a>
+                <% } else { %>
+                    No document attached
+                <% } %>
+                <% if (request.from_date === request.to_date) { %>
+                    <br>From Time: <%= request.from_time %><br>
+                    To Time: <%= request.to_time %>
+                <% } %>
+                <hr>
+            </li>
+        <% }); %>
+    </ul>
+</body>
+</html>
