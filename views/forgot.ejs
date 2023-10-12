@@ -73,10 +73,11 @@
             }
         }
     </style>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
 </head>
 <body>
     <div class="main">
-        <form action="/login" method="post">
+        <form action="/reset-password" method="post">
             <div class="profile">
                 <img src="assets/images/profile.png" alt="">
             </div>
@@ -94,12 +95,12 @@
             </div>
             <div class="inputs code_box">
                 <label for="reset_code">Enter your Code:</label><br>
-                <input type="text" name="Code" id="reset_code" required>
-                <input type="text" name="Code" id="reset_code" required>
-                <input type="text" name="Code" id="reset_code" required>
-                <input type="text" name="Code" id="reset_code" required>
-                <input type="text" name="Code" id="reset_code" required>
-                <input type="text" name="Code" id="reset_code" required>
+                <input type="text" name="Code1" id = "reset_code" required maxlength="1">
+                <input type="text" name="Code2" id = "reset_code" required maxlength="1">
+                <input type="text" name="Code3" id = "reset_code" required maxlength="1">
+                <input type="text" name="Code4" id = "reset_code" required maxlength="1">
+                <input type="text" name="Code5" id = "reset_code" required maxlength="1">
+                <input type="text" name="Code6" id = "reset_code" required maxlength="1">
             </div>
             <div class="input_btn">
                 <input type="submit" value="Reset Password">

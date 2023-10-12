@@ -53,7 +53,7 @@ app.get('/request-form', (req, res) => {
 })
 
 app.get('/forgot-password', (req,res) => {
-  res.sendFile(__dirname + '/public/forgot.html');
+  res.render('forgot');
 })
 
 app.post('/signup', async (req, res) => {
@@ -113,7 +113,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/forgot-password', async (req,res) => {
+app.post('/reset-password', async (req,res) => {
   
 })
 
