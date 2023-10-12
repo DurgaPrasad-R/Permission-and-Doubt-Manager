@@ -37,7 +37,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.get('/', (req, res) => {
-  res.send('Welcome Here!');
+  res.send('Hurray! Welcome Gig!!');
 })
 
 app.get('/login', (req, res) => {
@@ -52,48 +52,22 @@ app.get('/request-form', (req, res) => {
   res.sendFile(__dirname + '/public/request_form.html');
 })
 
-// app.post('/signup', async (req, res) => {
-//   const email = req.body.Email;
-//   const name = req.body.Name;
-
-//   // If the user with the provided Name already exists
-//   const existingUser = await db.collection('Users').doc(email).get();
-
-//   if (existingUser.exists) {
-//     // User already exists, redirect to the login page
-//     res.send("User already exists, redirect to the login page");
-//   } else {
-//     // User is not registered, it will create a new document with Name as the document ID
-//     const userDef = {
-//       Name: name,
-//       Email: email,
-//       Password: passwordHash.generate(req.body.Password),
-//       Department: req.body.Department,
-//       Role: req.body.Role
-//     }
-//     if(req.body.Role!=="HOD"){
-//       userDef.Regd_No = req.body.regd_no;
-//     }
-//     await db.collection('Users').collection(req.body.Department).doc(email).set(userDef).then(() => {
-//       // Send a success message and then redirect to the login page
-//       res.send("Signup Successful");
-//     });
-//   }
-// });
+app.get('/forgot-password', (req,res) => {
+  res.sendFile(__dirname + '/public/forgot.html');
+})
 
 app.post('/signup', async (req, res) => {
   const email = req.body.Email;
   const name = req.body.Name;
   const department = req.body.Department;
 
-  // If the user with the provided Name already exists
+  // If the user with the provided Name already exists redirect to the login page
   const existingUser = await db.collection('Users').doc(email).get();
 
   if (existingUser.exists) {
-    // User already exists, redirect to the login page
     res.send("User already exists, redirect to the login page");
   } else {
-    // User is not registered, create a new document in the department subcollection
+    // New User
     const userDef = {
       Name: name,
       Email: email,
@@ -101,15 +75,13 @@ app.post('/signup', async (req, res) => {
       Role: req.body.Role
     };
 
-    // Conditionally add Regd_No based on the user's role
-    if (req.body.Role !== "HOD") {
+    // add Regd_No based on the user's role
+    if (req.body.Role !== "HOD" || req.body.Role != "Faculty") {
       userDef.Regd_No = req.body.regd_no;
     }
 
-    // Add the user document to the appropriate department subcollection
     await db.collection('Users').doc(department).collection(department).doc(email).set(userDef);
 
-    // Send a success message and then redirect to the login page
     res.send("Signup Successful");
   }
 });
@@ -117,7 +89,7 @@ app.post('/signup', async (req, res) => {
 app.post('/login', async (req, res) => {
   const email = req.body.Email;
 
-  // Check if the user document exists in the specific department
+  // if the user document exists in the specific department then he should be logged in
   const department = req.body.Department;
   const querySnapshot = await db.collection('Users').doc(department).collection(department).doc(email).get();
 
@@ -132,23 +104,23 @@ app.post('/login', async (req, res) => {
         Role: docData.Role
       };
       req.session.userData = userData;
-      // Sends a success alert message and then redirect or perform any other actions
       res.send("Success!!");
     } else {
       res.send("Credentials Wrong!!");
     }
   } else {
-    // User not found, sends an alert or error message
     res.send("User Not Found");
   }
 });
 
+app.post('/forgot-password', async (req,res) => {
+  
+})
 
-// Sample department-to-HOD mapping
 const departmentToHODMapping = {
   CSE: 'rsraju@vishnu.edu.in',
   ECE: 'hod-ece@vishnu.edu.in',
-  // Add more departments and corresponding HOD emails as needed
+  // TODO: Add more departments and corresponding HOD emails as needed
 };
 
 app.post('/request-form-data-upload', upload.single('documents'), async (req, res) => {
@@ -196,15 +168,14 @@ app.post('/request-form-data-upload', upload.single('documents'), async (req, re
         }
       }
 
-    // Update the student's requests in their own document
+    // Update the student's requests and also add it to the HOD's requests
     const studentRequestsRef = userDocument.collection('requests');
     studentRequestsRef.doc(uniqueId).set(requestData);
 
-    // Retrieve the HOD email from the mapping
+    // Retrieving the HOD email from the mapping
     const hodEmail = departmentToHODMapping[department];
 
     if (hodEmail) {
-      // Duplicate the request data to the HOD's document
       const hodDocumentRef = db.collection('Users').doc(department).collection(department).doc(hodEmail);
       const hodRequestsRef = hodDocumentRef.collection('requests');
       hodRequestsRef.doc(uniqueId).set(requestData);
@@ -271,11 +242,11 @@ app.post('/hod-requests/approve', async (req, res) => {
     const StudentrequestsRef = db.collection('Users').doc(department).collection(department).doc(studentEmail).collection('requests');
     const student = StudentrequestsRef.doc(requestId);
     if (action === 'approve') {
-      await requestDoc.update({ status: 'approved' });
-      await student.update({status: 'approved'})
+      await requestDoc.update({ status: 'Approved' });
+      await student.update({status: 'Approved'})
     } else if (action === 'deny') {
-      await requestDoc.update({ status: 'denied' });
-      await student.update({status: 'denied'})
+      await requestDoc.update({ status: 'Denied' });
+      await student.update({status: 'Denied'})
     }
 
     // Redirect back to the HOD requests page

@@ -70,10 +70,6 @@
             }
         }
     </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,300&display=swap"
-        rel="stylesheet">
 </head>
 
 <body>
@@ -122,10 +118,11 @@
         function toggleTempInputs() {
             const role = document.getElementById('person');
             const tempInputs = document.getElementById('temp');
-            console.log(role)
-            console.log(role == "HOD")
-            if (role.value === "HOD" ) {
+            if (role.value === "HOD" || role.value === "Faculty" ) {
                 tempInputs.style.display = 'none';
+            }
+            else{
+                tempInputs.style.display = 'block';
             }
         }
 

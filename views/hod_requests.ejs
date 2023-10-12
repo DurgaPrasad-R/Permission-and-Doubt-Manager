@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOD Requests</title>
 </head>
 <body>
     <h1>HOD Requests</h1>
     <ul>
         <% requests.forEach(request => { %>
             <li>
-                Request ID: <%= request.id %><br>
                 Regd_no: <%= request.regd_no %><br>
                 Reason: <%= request.reason %><br>
-                From Date: <%= request.from_date %><br>
-                To Date: <%= request.to_date %><br>
+                <% if (request.from_date === request.to_date) { %>
+                    Date: <%= request.to_date %><br>
+                    From Time: <%= request.from_time %><br>
+                    To Time: <%= request.to_time %>
+                <% } else { %>
+                    From Date: <%= request.from_date %><br>
+                    To Date: <%= request.to_date %><br>
+                <% } %>
                 Document Attached: <% if (request.imgPath) { %>
                     <a href="<%= request.imgPath %>" target="_blank">View Document</a>
                 <% } else { %>
                     No document attached
                 <% } %> <br>
-                <% if (request.from_date === request.to_date) { %>
-                    <br>From Time: <%= request.from_time %><br>
-                    To Time: <%= request.to_time %>
-                <% } %>
                 Status: <%= request.status %>
                 <form action="/hod-requests/approve" method="post">
                     <input type="hidden" name="requestId" value="<%= request.id %>">
