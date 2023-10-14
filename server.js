@@ -5,6 +5,7 @@ const passwordHash = require('password-hash');
 const session = require('express-session');
 var serviceAccount = require("./Key.json");
 const multer = require('multer');
+const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const app = express()
 const port = 3000
@@ -36,12 +37,12 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-app.get('/', (req, res) => {
+app.get('/dashboard', (req, res) => {
   res.send('Hurray! Welcome Gig!!');
 })
 
 app.get('/login', (req, res) => {
-  res.sendFile(__dirname + '/public/login.html');
+  res.render('login',{flag: false});
 });
 
 app.get('/signup', (req, res) => {
@@ -50,10 +51,23 @@ app.get('/signup', (req, res) => {
 
 app.get('/request-form', (req, res) => {
   res.sendFile(__dirname + '/public/request_form.html');
-})
+});
 
 app.get('/forgot-password', (req,res) => {
-  res.render('forgot');
+  res.render('forgot')
+});
+
+app.post('/forgot-password', (req,res) => {
+  const code =  crypto.randomBytes(3).toString('hex').toUpperCase().substring(0, 6);
+  const user_email = req.body.Email;
+  const dept = req.body.Department;
+  credential = {
+    user_email: user_email,
+    user_dept: dept
+  }
+  req.session.credentials = credential;
+  const session = req.session;
+  res.render('reset',{code,session: session});
 })
 
 app.post('/signup', async (req, res) => {
@@ -62,7 +76,7 @@ app.post('/signup', async (req, res) => {
   const department = req.body.Department;
 
   // If the user with the provided Name already exists redirect to the login page
-  const existingUser = await db.collection('Users').doc(email).get();
+  const existingUser = await db.collection('Users').doc(department).collection(department).doc(email).get();
 
   if (existingUser.exists) {
     res.send("User already exists, redirect to the login page");
@@ -106,15 +120,37 @@ app.post('/login', async (req, res) => {
       req.session.userData = userData;
       res.send("Success!!");
     } else {
-      res.send("Credentials Wrong!!");
+      res.render('login', {message: 'The Password doesnot match',flag:true});
     }
   } else {
-    res.send("User Not Found");
+    res.render('login', {message: 'Given Details are not found. Please Signup',flag:true});
   }
 });
 
 app.post('/reset-password', async (req,res) => {
-  
+  const userEmail = req.session.credentials.user_email;
+  const department = req.session.credentials.user_dept;
+  const newPassword = req.body.Pass;
+  const verificationCode = req.body.Code1 + req.body.Code2 + req.body.Code3 + req.body.Code4 + req.body.Code5 + req.body.Code6;
+  const originalCode = req.body.original_code;
+
+  const userRef = await db.collection('Users').doc(department).collection(department).doc(userEmail);
+  const userSnapshot = await userRef.get();
+  if (userSnapshot.empty) {
+    // User not found, handle accordingly
+    return res.send('User not found');
+  } else{
+    if (req.body.Confirm_Pass !== req.body.Pass){
+      res.send("Passwords don't match");
+    }
+    else if (verificationCode === originalCode && req.body.Confirm_Pass === req.body.Pass ){
+      await userRef.update({ Password: passwordHash.generate(newPassword) });
+      res.send("Password Reset Successfully");
+    } else {
+      res.send('Invalid verification code');
+    }
+  }
+
 })
 
 const departmentToHODMapping = {
@@ -254,6 +290,16 @@ app.post('/hod-requests/approve', async (req, res) => {
   } else {
     res.send('<script>alert("Please Login as HOD."); window.location.href = "/login";</script>');
   }
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+    } else {
+      res.redirect('/dashboard');
+    }
+  });
 });
 
 app.listen(port, () => {

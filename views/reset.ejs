@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            background-color: #01BCE1;
+        }
+
+        .main {
+            height: 100vh;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .profile{
+            display: flex;
+            justify-content: center;
+        }
+
+        label,
+        input[type=submit] {
+            font-weight: 600;
+        }
+
+        input{
+            margin: 10px 0;
+            width: 25vmax;
+            height: 5vmin;
+            font-size: 2.5vmin;
+            padding: 0 1vmin;
+            border-radius: 4px;
+            border: 1px solid black;
+        }
+
+        input[type=submit]{
+            background-color: #1240B2;
+            color: white;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .ack{
+            display: flex;
+            justify-content: center;
+        }
+
+        .code_box #reset_code1, #reset_code2,
+        #reset_code3, #reset_code4,
+        #reset_code5, #reset_code6{
+            width: 50px;
+            text-align: center;
+        }
+
+        @media (max-width:600px) {
+            .img-1{
+                display: none;
+            }    
+
+            input {
+                margin: 10px 0;
+                width: 40vmax;
+                height: 5vmin;
+                font-size: 2.5vmin;
+                padding: 0 1vmin;
+            }
+        }
+    </style>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+</head>
+<body>
+    <div class="main">
+        <form action="/reset-password" method="post">
+            <div class="profile">
+                <img src="assets/images/profile.png" alt="">
+            </div>
+            <div class="inputs">
+                <label for="pass">Enter your new password:</label><br>
+                <input type="password" name="Pass" id="pass" placeholder="Enter your new password:" required>
+            </div>
+            <div class="inputs">
+                <label for="confirm_pass">Confirm your password:</label><br>
+                <input type="password" name="Confirm_Pass" id="confirm_pass" placeholder="Confirm your password:" required>
+            </div>
+            <div class="inputs code_box">
+                <label for="reset_code">Enter your Code:</label><br>
+                <input type="text" name="Code1" id = "reset_code1" required maxlength="1">
+                <input type="text" name="Code2" id = "reset_code2" required maxlength="1">
+                <input type="text" name="Code3" id = "reset_code3" required maxlength="1">
+                <input type="text" name="Code4" id = "reset_code4" required maxlength="1">
+                <input type="text" name="Code5" id = "reset_code5" required maxlength="1">
+                <input type="text" name="Code6" id = "reset_code6" required maxlength="1">
+            </div>
+            <div class="inputs">
+                <input type="hidden" name="user_email" id="user_email" value=<%= session.credentials.user_email %>>
+                <input type="hidden" name="original_code" id="original_code" value=<%= code %>>
+            </div>
+            <div class="input_btn">
+                <input type="submit" value="Reset Password">
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+        const userEmail = document.getElementById("user_email").value;
+        const code = document.getElementById("original_code").value;
+        console.log(userEmail)
+        console.log(code)
+        const ebody = `
+            <div>
+                <h2>Hello User,</h2>
+                <p>You have chosen to reset the password!</p>
+                <p>Your one-time code for resetting the password is: <b>${code}</b></p>
+            </div>
+        `;
+        Email.send({
+            SecureToken : "e92739ed-e3b4-4842-b359-e4a8ab705a28",
+            To : userEmail,
+            From : "permissionvishnu@gmail.com",
+            Subject : "Request for Resetting the Password",
+            Body : ebody
+        }).then(
+        message => alert("sent to the user")
+        );
+    </script>
+</body>
+</html>

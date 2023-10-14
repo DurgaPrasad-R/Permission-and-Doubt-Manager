@@ -88,13 +88,34 @@
                 <label for="password">Enter your password:</label><br>
                 <input type="password" name="Password" id="password" placeholder="Enter your password:" required>
             </div>
+            <% if (flag) { %>
+                <p class="error-message" id="error-message"> <%= message %> </p>
+            <% } %>
             <div class="input_btn">
                 <input type="submit" value="Login">
+            </div>
+            <div class="ack">
+                <a href="/forgot-password">Forgot Password?</a>
             </div>
             <div class="ack">
                 <a href="/signup">Don't have an account?</a>
             </div>
         </form>
     </div>
+    <script type="text/javascript">
+        const emailInp = document.getElementById("email");
+        const deptInp = document.getElementById("Department");
+        const passInp = document.getElementById("password");
+        const errorMsg = document.getElementById("error-message");
+        emailInp.addEventListener('input',function(){
+            errorMsg.style.display="none";
+        });
+        deptInp.addEventListener('input',function(){
+            errorMsg.style.display="none";
+        });
+        passInp.addEventListener('input',function(){
+            errorMsg.style.display="none";
+        });
+    </script>
 </body>
 </html>

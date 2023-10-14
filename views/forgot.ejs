@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
     <style>
         * {
             padding: 0;
@@ -55,8 +52,11 @@
             justify-content: center;
         }
 
-        .code_box #reset_code{
+        .code_box #reset_code1, #reset_code2,
+        #reset_code3, #reset_code4,
+        #reset_code5, #reset_code6{
             width: 50px;
+            text-align: center;
         }
 
         @media (max-width:600px) {
@@ -73,11 +73,10 @@
             }
         }
     </style>
-    <script src="https://smtpjs.com/v3/smtp.js"></script>
 </head>
 <body>
     <div class="main">
-        <form action="/reset-password" method="post">
+        <form action="/forgot-password" method="post">
             <div class="profile">
                 <img src="assets/images/profile.png" alt="">
             </div>
@@ -86,24 +85,11 @@
                 <input type="email" name="Email" id="email" placeholder="Enter your email:" required>
             </div>
             <div class="inputs">
-                <label for="pass">Enter your new password:</label><br>
-                <input type="password" name="Pass" id="pass" placeholder="Enter your new password:" required>
-            </div>
-            <div class="inputs">
-                <label for="confirm_pass">Confirm your password:</label><br>
-                <input type="password" name="Confirm_Pass" id="confirm_pass" placeholder="Confirm your password:" required>
-            </div>
-            <div class="inputs code_box">
-                <label for="reset_code">Enter your Code:</label><br>
-                <input type="text" name="Code1" id = "reset_code" required maxlength="1">
-                <input type="text" name="Code2" id = "reset_code" required maxlength="1">
-                <input type="text" name="Code3" id = "reset_code" required maxlength="1">
-                <input type="text" name="Code4" id = "reset_code" required maxlength="1">
-                <input type="text" name="Code5" id = "reset_code" required maxlength="1">
-                <input type="text" name="Code6" id = "reset_code" required maxlength="1">
+                <label for="department">Enter your department:</label><br>
+                <input type="text" name="Department" id="department" placeholder="Enter your department:" required>
             </div>
             <div class="input_btn">
-                <input type="submit" value="Reset Password">
+                <input type="submit" value="Submit">
             </div>
         </form>
     </div>
