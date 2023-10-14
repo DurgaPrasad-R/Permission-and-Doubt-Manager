@@ -55,6 +55,22 @@
             justify-content: center;
         }
 
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-10px);
+            }
+            20%, 40%, 60%, 80% {
+                transform: translateX(10px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out 5s;
+        }
+
         @media (max-width:600px) {
             .img-1{
                 display: none;
@@ -72,7 +88,7 @@
 </head>
 <body>
     <div class="main">
-        <form action="/login" method="post">
+        <form action="/login" method="post" id="myform">
             <div class="profile">
                 <img src="assets/images/profile.png" alt="">
             </div>
@@ -90,6 +106,7 @@
             </div>
             <% if (flag) { %>
                 <p class="error-message" id="error-message"> <%= message %> </p>
+                <input type="hidden" id="Flag" value="<%= flag %>">
             <% } %>
             <div class="input_btn">
                 <input type="submit" value="Login">
@@ -107,6 +124,7 @@
         const deptInp = document.getElementById("Department");
         const passInp = document.getElementById("password");
         const errorMsg = document.getElementById("error-message");
+        errorMsg.style.color = 'red';
         emailInp.addEventListener('input',function(){
             errorMsg.style.display="none";
         });
