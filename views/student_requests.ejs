@@ -4,28 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Requests</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .request-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 0 5vmin;
+        }
+
+        .request-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+            background-color: #ffffff; /* White background */
+            width: 200px;
+            height: 200px;
+        }
+
+        .request-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .request-details {
+            padding: 10px;
+        }
+
+        .request-details a {
+            color: #e91e63; /* Pink link color */
+        }
+
+        .request-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333; /* Dark text color */
+        }
+
+        .request-description {
+            font-size: 14px;
+            margin: 0;
+            color: #666; /* Gray text color */
+        }
+    </style>
 </head>
 <body>
     <h1>Your Requests</h1>
-    <ul>
+    <ul class="request-list">
         <% requests.forEach(request => { %>
-            <li>
-                Request ID: <%= request.id %><br>
-                Regd_no: <%= request.regd_no %><br>
-                Reason: <%= request.reason %><br>
-                From Date: <%= request.from_date %><br>
-                To Date: <%= request.to_date %><br>
-                Status: <%= request.status %> <br>
-                Document Attached: <% if (request.imgPath) { %>
-                    <a href="<%= request.imgPath %>" target="_blank">View Document</a>
-                <% } else { %>
-                    No document attached
-                <% } %>
-                <% if (request.from_date === request.to_date) { %>
-                    <br>From Time: <%= request.from_time %><br>
-                    To Time: <%= request.to_time %>
-                <% } %>
-                <hr>
+            <li class="request-card">
+                <div class="request-details">
+                    <!-- <h3 class="request-title">Request ID: <%= request.id %></h3> -->
+                    <p class="request-description">Regd_no: <%= request.regd_no %></p>
+                    <p class="request-description">Reason: <%= request.reason %></p>
+                    <p class="request-description">From Date: <%= request.from_date %></p>
+                    <p class="request-description">To Date: <%= request.to_date %></p>
+                    <% if (request.from_date === request.to_date) { %>
+                        <p class="request-description">From Time: <%= request.from_time %></p>
+                        <p class="request-description">To Time: <%= request.to_time %></p>
+                    <% } %>
+                    <p class="request-description">Document Attached: <% if (request.imgPath) { %>
+                        <a href="<%= request.imgPath %>" target="_blank">View Document</a>
+                    <% } else { %>
+                        No document attached
+                    <% } %></p>
+                    <p class="request-description">Status: <%= request.status %></p>
+                </div>
             </li>
         <% }); %>
     </ul>

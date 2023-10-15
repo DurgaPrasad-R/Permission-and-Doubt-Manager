@@ -33,7 +33,7 @@
             font-weight: 600;
         }
 
-        input{
+        input,select{
             margin: 10px 0;
             width: 25vmax;
             height: 5vmin;
@@ -55,21 +55,6 @@
             justify-content: center;
         }
 
-        @keyframes shake {
-            0%, 100% {
-                transform: translateX(0);
-            }
-            10%, 30%, 50%, 70%, 90% {
-                transform: translateX(-10px);
-            }
-            20%, 40%, 60%, 80% {
-                transform: translateX(10px);
-            }
-        }
-
-        .shake {
-            animation: shake 0.5s ease-in-out 5s;
-        }
 
         @media (max-width:600px) {
             .img-1{
@@ -99,6 +84,14 @@
             <div class="inputs">
                 <label for="name">Enter your Department:</label><br>
                 <input type="text" name="Department" id="Department" placeholder="Enter your Department:" required>
+            </div>
+            <div class="inputs">
+                <label for="person">Enter your role:</label><br>
+                <select name="Role" id="person" required>
+                    <option value="Student">Student</option>
+                    <option value="Faculty">Faculty</option>
+                    <option value="HOD">HOD</option>
+                </select>
             </div>
             <div class="inputs">
                 <label for="password">Enter your password:</label><br>

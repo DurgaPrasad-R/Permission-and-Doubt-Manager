@@ -60,10 +60,12 @@ app.get('/forgot-password', (req,res) => {
 app.post('/forgot-password', (req,res) => {
   const code =  crypto.randomBytes(3).toString('hex').toUpperCase().substring(0, 6);
   const user_email = req.body.Email;
+  const role = req.body.Role;
   const dept = req.body.Department;
   credential = {
     user_email: user_email,
-    user_dept: dept
+    user_dept: dept,
+    user_role: role
   }
   req.session.credentials = credential;
   const session = req.session;
@@ -74,9 +76,10 @@ app.post('/signup', async (req, res) => {
   const email = req.body.Email;
   const name = req.body.Name;
   const department = req.body.Department;
+  const Role = req.body.Role;
 
   // If the user with the provided Name already exists redirect to the login page
-  const existingUser = await db.collection('Users').doc(department).collection(department).doc(email).get();
+  const existingUser = await db.collection('Users').doc(department).collection(department).doc(Role).collection(Role).doc(email).get();
 
   if (existingUser.exists) {
     res.send("User already exists, redirect to the login page");
@@ -86,16 +89,14 @@ app.post('/signup', async (req, res) => {
       Name: name,
       Email: email,
       Password: passwordHash.generate(req.body.Password),
-      Role: req.body.Role
+      Role: Role
     };
 
     // add Regd_No based on the user's role
-    if (req.body.Role !== "HOD" || req.body.Role != "Faculty") {
-      userDef.Regd_No = req.body.regd_no;
+    if (Role !== "HOD" || Role != "Faculty") {
+      userDef.Regd_No = req.body.regd_no.toUpperCase();
     }
-
-    await db.collection('Users').doc(department).collection(department).doc(email).set(userDef);
-
+    await db.collection('Users').doc(department).collection(department).doc(Role).collection(Role).doc(email).set(userDef);
     res.send("Signup Successful");
   }
 });
@@ -103,9 +104,9 @@ app.post('/signup', async (req, res) => {
 app.post('/login', async (req, res) => {
   const email = req.body.Email;
 
-  // if the user document exists in the specific department then he should be logged in
+  const Role = req.body.Role;
   const department = req.body.Department;
-  const querySnapshot = await db.collection('Users').doc(department).collection(department).doc(email).get();
+  const querySnapshot = await db.collection('Users').doc(department).collection(department).doc(Role).collection(Role).doc(email).get();
 
   if (querySnapshot.exists) {
     const docData = querySnapshot.data();
@@ -118,7 +119,14 @@ app.post('/login', async (req, res) => {
         Role: docData.Role
       };
       req.session.userData = userData;
-      res.send("Success!!");
+      // if (docData.Role === 'Faculty'){
+      //   res.redirect("/facultymembers"); // ToDo JV Name through session
+      // } else if (docData.Role === 'Student'){
+      //   res.render("maindashboard.ejs"); // ToDo JV Name through session
+      // } else {
+      //   // TODO Dashboard for HOD
+      // }
+      res.send("Success");
     } else {
       res.render('login', {message: 'The Password doesnot match',flag:true});
     }
@@ -127,14 +135,16 @@ app.post('/login', async (req, res) => {
   }
 });
 
+
+
 app.post('/reset-password', async (req,res) => {
   const userEmail = req.session.credentials.user_email;
   const department = req.session.credentials.user_dept;
+  const Role = req.session.credentials.user_role;
   const newPassword = req.body.Pass;
   const verificationCode = req.body.Code1 + req.body.Code2 + req.body.Code3 + req.body.Code4 + req.body.Code5 + req.body.Code6;
   const originalCode = req.body.original_code;
-
-  const userRef = await db.collection('Users').doc(department).collection(department).doc(userEmail);
+  const userRef = await db.collection('Users').doc(department).collection(department).doc(Role).collection(Role).doc(userEmail);
   const userSnapshot = await userRef.get();
   if (userSnapshot.empty) {
     // User not found, handle accordingly
@@ -163,7 +173,7 @@ app.post('/request-form-data-upload', upload.single('documents'), async (req, re
   if (req.session.userData) {
     const studentEmail = req.session.userData.Useremail;
     const department = req.session.userData.Department;
-
+    const Role = req.session.userData.Role;
     const reason = req.body.reason;
     const from_date = req.body.from_date;
     const to_date = req.body.to_date;
@@ -175,7 +185,7 @@ app.post('/request-form-data-upload', upload.single('documents'), async (req, re
       return res.status(400).send('No file uploaded.');
     }
     const uniqueId = uuidv4();
-    const userDocument = await db.collection('Users').doc(department).collection(department).doc(studentEmail);
+    const userDocument = await db.collection('Users').doc(department).collection(department).doc('Student').collection('Student').doc(studentEmail);
     const userDef = await userDocument.get()
     const imagepath = '/uploads/' + imageFile.filename;
     let requestData;
@@ -212,7 +222,7 @@ app.post('/request-form-data-upload', upload.single('documents'), async (req, re
     const hodEmail = departmentToHODMapping[department];
 
     if (hodEmail) {
-      const hodDocumentRef = db.collection('Users').doc(department).collection(department).doc(hodEmail);
+      const hodDocumentRef = db.collection('Users').doc(department).collection(department).doc('HOD').collection('HOD').doc(hodEmail);
       const hodRequestsRef = hodDocumentRef.collection('requests');
       hodRequestsRef.doc(uniqueId).set(requestData);
     }
@@ -227,9 +237,9 @@ app.get('/student-requests', async (req, res) => {
   if (req.session.userData && req.session.userData.Role === 'Student') {
     const studentEmail = req.session.userData.Useremail;
     const department = req.session.userData.Department;
-
+    const Role = req.session.userData.Role;
     // Retrieve the student's requests from the database
-    const studentRequestsRef = db.collection('Users').doc(department).collection(department).doc(studentEmail).collection('requests');
+    const studentRequestsRef = db.collection('Users').doc(department).collection(department).doc(Role).collection(Role).doc(studentEmail).collection('requests');
     const studentRequestsSnapshot = await studentRequestsRef.get();
 
     const studentRequests = [];
@@ -250,7 +260,7 @@ app.get('/hod-requests', async (req, res) => {
     const department = req.session.userData.Department;
     const hodmail = departmentToHODMapping[department];
     // Retrieve the requests for the HOD's department
-    const requestsRef = db.collection('Users').doc(department).collection(department).doc(hodmail).collection('requests');
+    const requestsRef = db.collection('Users').doc(department).collection(department).doc("HOD").collection("HOD").doc(hodmail).collection('requests');
     
     const snapshot = await requestsRef.get();
 
@@ -272,10 +282,10 @@ app.post('/hod-requests/approve', async (req, res) => {
     const action = req.body.action; // "approve" or "deny"
     const hodmail = departmentToHODMapping[department]
     // Update the request status based on the action
-    const requestsRef = db.collection('Users').doc(department).collection(department).doc(hodmail).collection('requests');
+    const requestsRef = db.collection('Users').doc(department).collection(department).doc("HOD").collection("HOD").doc(hodmail).collection('requests');
     const requestDoc = requestsRef.doc(requestId);
-    const studentEmail = req.body.regd_no+"@vishnu.edu.in";
-    const StudentrequestsRef = db.collection('Users').doc(department).collection(department).doc(studentEmail).collection('requests');
+    const studentEmail = req.body.regd_no.toLowerCase()+"@vishnu.edu.in";
+    const StudentrequestsRef = db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(studentEmail).collection('requests');
     const student = StudentrequestsRef.doc(requestId);
     if (action === 'approve') {
       await requestDoc.update({ status: 'Approved' });

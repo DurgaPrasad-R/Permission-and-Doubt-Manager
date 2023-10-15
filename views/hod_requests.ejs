@@ -4,6 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOD Requests</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .request-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 0 5vmin;
+        }
+
+        .request-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+            background-color: #ffffff; /* White background */
+            width: 200px;
+            height: 300px;
+        }
+
+        .request-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .request-details {
+            padding: 10px;
+        }
+
+        .request-details a {
+            color: #e91e63; /* Pink link color */
+        }
+
+        .request-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333; /* Dark text color */
+        }
+
+        .request-description {
+            font-size: 14px;
+            margin: 0;
+            color: #666; /* Gray text color */
+        }
+    </style>
 </head>
 <body>
     <h1>HOD Requests</h1>
