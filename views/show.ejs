@@ -5,21 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-      body{
-        background-color: antiquewhite;
+      body {
+          font-family: Arial, sans-serif;
+          background-color: #f0f0f0;
+          margin: 0;
+          padding: 0;
       }
-      .block{
-        padding-left:100px;
+      
+      .block {
+        
+          display: flex;
+          flex-wrap: wrap;
+          /* justify-content: center; */
+          padding: 20px;
+          flex-direction: row;
       }
-      .block1{
-        border:2px solid black;
-        margin-right:150px;
-        padding:10px;
-        margin-bottom:20px;
+      
+      .block1 {
+          border: 2px solid #333;
+          margin: 10px;
+          padding: 20px;
+          background-color: #fff;
+          box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+          text-align: center;
       }
-    </style>
+      
+      h3 {
+          margin: 10px 0;
+      }
+      
+      form {
+          display: flex;
+          flex-direction: column;
+      }
+      
+      input[type="hidden"] {
+          display: none;
+      }
+      
+      input[type="submit"] {
+          background-color: #0077b6;
+          color: #fff;
+          border: none;
+          padding: 10px;
+          cursor: pointer;
+          margin-top: 10px;
+      }
+  </style>
 </head>
 <body>
+  <%- include('header',{name:name}); -%>
   <div class="block">
     <% if(locals.names){%>
         <% for(var i=0;i<names.length;i++) {%>

@@ -74,7 +74,7 @@ app.post('/forgot-password', (req,res) => {
 
 app.get('/home', (req,res) => {
   const name = req.session.userData.Name;
-  res.render('studentdashboard',{name:name});
+  res.render('main',{name:name});
 });
 
 app.post('/signup', async (req, res) => {
@@ -131,7 +131,7 @@ app.post('/login', async (req, res) => {
         res.redirect("/facultymembers"); // ToDo JV Name through session
       }
        else if (docData.Role === 'Student'){
-        res.render("studentdashboard",{name}); // ToDo JV Name through session
+        res.render("main",{name}); // ToDo JV Name through session
       } 
       // else {
       //   // TODO Dashboard for HOD
@@ -231,8 +231,9 @@ function getFacultyByDepartment(req, res, department) {
         });
       });
     }
+    const name = req.session.userData.Name;
     res.render("show", {
-      names: show,
+      names: show,name:name
     });
   });
 }
@@ -245,7 +246,8 @@ app.get("/civil", (req, res) => getFacultyByDepartment(req, res, "CE"));
 
 app.post("/faculty",(req,res)=>{
   const faculty_mail = req.body.email;
-  res.render("student_doubt",{faculty_mail:faculty_mail});
+  const name = req.session.userData.Name;
+  res.render("student_doubt",{faculty_mail:faculty_mail,name:name});
 })
 
 app.post("/query",(req,res)=>{
@@ -276,6 +278,8 @@ app.post("/query",(req,res)=>{
           text: "Request sent successfully.", 
           icon: "success", 
           button: "OK" 
+        }).then(()=>{
+          window.location.href='/home';
         })
       </script> 
     </body> 
