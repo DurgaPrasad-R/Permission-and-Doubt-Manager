@@ -72,6 +72,11 @@ app.post('/forgot-password', (req,res) => {
   res.render('reset',{code,session: session});
 })
 
+app.get('/home', (req,res) => {
+  const name = req.session.userData.Name;
+  res.render('studentdashboard',{name:name});
+});
+
 app.post('/signup', async (req, res) => {
   const email = req.body.Email;
   const name = req.body.Name;
@@ -114,6 +119,7 @@ app.post('/login', async (req, res) => {
 
     if (passwordHash.verify(req.body.Password, PasswordHash)) {
       const userData = {
+        Name: docData.Name,
         Useremail: email,
         Department: department,
         Role: docData.Role
@@ -125,7 +131,7 @@ app.post('/login', async (req, res) => {
         res.redirect("/facultymembers"); // ToDo JV Name through session
       }
        else if (docData.Role === 'Student'){
-        res.render("studentdashboard",{name: name}); // ToDo JV Name through session
+        res.render("studentdashboard",{name}); // ToDo JV Name through session
       } 
       // else {
       //   // TODO Dashboard for HOD

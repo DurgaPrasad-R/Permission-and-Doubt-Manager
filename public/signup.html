@@ -34,6 +34,8 @@
             font-weight: 600;
         }
 
+        
+
         input,select {
             margin: 10px 0;
             width: 25vmax;
@@ -55,29 +57,12 @@
             display: flex;
             justify-content: center;
         }
-
-        @media (max-width:600px) {
-            .img-1{
-                display: none;
-            }    
-
-            input {
-                margin: 10px 0;
-                width: 40vmax;
-                height: 5vmin;
-                font-size: 2.5vmin;
-                padding: 0 1vmin;
-            }
-        }
     </style>
 </head>
 
 <body>
     <div class="main">
         <form action="/signup" method="post">
-            <div class="profile">
-                <img src="assets/images/profile.png" alt="">
-            </div>
             <div class="inputs">
                 <label for="name">Enter your name:</label><br>
                 <input type="text" name="Name" id="name" placeholder="Enter your name:" required>

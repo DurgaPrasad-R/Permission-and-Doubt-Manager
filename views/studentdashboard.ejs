@@ -1,111 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Department Template</title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/72056d3ac9.js" crossorigin="anonymous"></script>
     <style>
-        *{
-            box-sizing: border-box;
-        }
-        body{
-            font-family: Arial, Helvetica, sans-serif;
-        }
-        header{
-            background-color: darkgoldenrod; 
-            padding: 5px;
-            text-align: center;
-            font-size: large;
-            color: white; 
-            height: 120px;
-        }
-        section{ 
-            height: 400px; 
-            display: flex;
-        }
-        nav{
-            flex: 1;
-            background: darkkhaki;
-            min-width: 10%;
-        }
-        nav ul{
-            list-style-type: none; 
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0fe;
             margin: 0;
-            padding: 0;
         }
-        li{
-            font-size: 25px;
-        }
-        li a{
-            display: block;
-            padding: 6px 18px;
-            text-decoration: none;
-        }
-        li a:hover{
-            background-color: grey;
-            color: aliceblue;
-        }
-        footer{
-            background-color: darkgoldenrod;
-            padding: 10px;
-            text-align: center;
-            color: white; 
-            height: 100px;
-        }
-        #reply{
-            margin-left:20px;
-            font-size:x-large;
-            text-decoration: none;
-        }
-        /* #loginname{
-            margin-right:10px;
-            float:right;
-        }
-        #logout{
-            float:right;
-            margin-top:50px;
-            margin-right:10px;
-        } */
 
-        .btn {
-            /* background-color: white; */
-            /* color: #333; */
-            float: right;
-            /* padding: 10px 10px; */
-            /* text-decoration: none; */
-            /* border: 2px solid #333; */
-            /* border-radius: 5px; */
-            /* transition: background-color 0.3s ease; */
+        header {
+            background-color: #0077b6;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            height: 10vh;
+        }
+
+        #logout-button {
+            background-color: #f00;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        #hamburger {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #hamburger:focus {
+            outline: none;
+        }
+
+        #hamburger-menu {
+            position: absolute;
+            background-color: #333;
+            color: #fff;
+            top: 70px;
+            right: 10px;
+            width: 150px;
+            border: 1px solid #fff;
+            display: none;
+            border-radius: 5px;
+        }
+
+        #hamburger-menu.show {
+            display: block;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            z-index: 1;
+            border-radius: 5px;
+        }
+
+        .faculty-list a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+        }
+
+        .faculty-list a:hover {
+            background-color: #0077b6;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        h5 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        #user-email {
+            font-size: 16px;
+        }
+
+        iframe {
+            border: none;
+            min-height: 400px;
+            width: 100%;
+        }
+
+        #reply {
+            font-weight: bold;
+            margin: 0;
+        }
+
+        footer {
+            background-color: #0077b6;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+        .offcanvas-body{
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        .offcanvas-body li{
+            border: 1px solid blue;
+            list-style: none;
+            margin-bottom:20px ;
+            background-color: #0d6efd;
+            width: 30%;
+            padding: 5px;
+            border-radius: var(--bs-border-radius) ;
+        }
+        .offcanvas-body li a{
+            color: white;
+            text-decoration: none;
+        }
+        #main{
+            
+            height: 30vh;
+        }
+        #sample{
+            display: flex;
+            justify-content:space-around;
+            margin-top: 10%;
+        }
+        #doubts{
+            box-shadow: 0px 0px 5px gray;
+            width: 30%;
+            text-wrap: wrap;
+            font-size: larger;
+            font-weight: bold;
+            background-image: url("permissions.svg");
+            height: 50vh;
+            background-position: center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        #doubts p{
+            margin-top: 30% ;
+            padding: 10px;
+            padding: 0px 60px;
+        }
+        #permissions{
+            width: 30%;
+            box-shadow: 0px 0px 5px gray;
+            text-wrap: wrap;
+            font-size: larger;
+            font-weight: bold;
+            background-image: url("Feb-Business_9.jpg");
+            height: 50vh;
+            background-position: center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        #permissions:hover{
+            box-shadow: 0px 0px 30px gray;
+        }
+        #doubts:hover{
+            box-shadow: 0px 0px 30px gray;
+        }
+        #permissions p{
+            margin-top: 30% ;
+            padding: 10px;
+            padding: 0px 60px;
+        }
+        .btn{
+            position: absolute;
+            bottom: 10%;
+        }
+        .fa-solid{
+            font-size: 30px;
+            width: 60px;
+        }
+        #a{
+            text-decoration: none;
+            color: white;
+        }
+        #log{
+            display: flex;
+            flex-direction: column;
+            line-height: 0px;
+        }
+        h1{
+            position: relative;
+            margin-top: -10px;
+            left: 40%;
+        }
+        #permit{
+            text-decoration: none;
+            color: white;
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="btn">
+        <div> 
+            <a href="/home" id="a"><i class="fa-solid fa-house"></i></a>
+            <div class="dropdown">
+                <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Departments</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <li><a href="/cse" target="display" class="call">CSE</a></li>
+                        <li><a href="/ece" target="display" class="call">ECE</a></li>
+                        <li><a href="/eee" target="display" class="call">EEE</a></li>
+                        <li><a href="/mech" target="display" class="call">MECH</a></li>
+                        <li><a href="/civil" target="display" class="call">CIVIL</a></li>   
+                        <li><a id="reply" href="facultyreplies" target="display">Replies</a></li> 
+                    </div>
+                </div>
+            </div>
+            <span id="user-email"></span>
+            
+        </div>
+        
+        <center><h1>Permissions</h1></center>
+        <div id="log">
             <% if(name){%>
                 <p>Welcome, <%= name %>!</p>
-                <a id="logout" href="/logout">Logout</a>
+                <button id="logout-button" href="/logout">Logout</a>
             <%}%>
         </div>
-        <h2>Engineering Departments</h2>
-        <h3>Doubts</h3>
     </header>
-    <section>
-    <nav>
-        <ul>
-            <li><a href="/cse" target="display">CSE</a></li>
-            <li><a href="/ece" target="display">ECE</a></li>
-            <li><a href="/eee" target="display">EEE</a></li>
-            <li><a href="/mech" target="display">MECH</a></li>
-            <li><a href="/civil" target="display">CIVIL</a></li>
-        </ul>
-        <h1><a id="reply" href="/facultyreplies" target="display">replies</a></h1>
-    </nav>
-    <iframe  name="display" width="100%" title="Display Department Information"></iframe>
-    </section>
-    <footer>
-        <p>Email: abc@vishnu.edu.in</p>
-        <p>Phone: 5441164944</p>
-    </footer>
+    <div id="main">
+        <div id="sample">
+            <div id="doubts">
+                <p>
+                    Click here to ask doubts from different branch faculties
+                </p>
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Branches</button>
+            </div>
+            <div id="permissions">
+                <p>
+                    click here to get permissions your HOD's
+                </p>
+                <button type="button" class="btn btn-primary"><a id="permit" href="/request-form">Permissions</a></button> 
+            </div>
+        </div>
+
+        <iframe name="display" title="Display Department Information"></iframe>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script>
+        
+        const change = () =>{
+            const sam = document.getElementById("sample");
+            sam.hidden=true;
+        }
+        const call = document.getElementsByClassName("call");
+        for( let i = 0 ;i<call.length;i++){
+            call[i].addEventListener('click',change);
+        }
+        const home = document.getElementsByClassName("fa-solid");
+    </script>
 </body>
 </html>
