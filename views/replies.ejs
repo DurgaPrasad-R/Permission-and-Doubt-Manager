@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .block{
+          display:flex;
+        }
+        form{
+          margin-right:10px;
+        }
+        .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #000;
+  }
+  body{
+    background-color: antiquewhite;
+  }
+  input,button{
+    background-color: #000;
+    color: antiquewhite;
+  }
+  
+      </style>
+</head>
+<body>
+    <% if (locals.names) { %>
+        <% for (var i = 0; i < names.length; i++) { %>
+          <h3><i>Name:</i><%=names[i].name%></h3>
+          <h3><i>Subject: </i> <%=names[i].sub%></h3>
+          <h3><i>Description: </i><%=names[i].description%></h3>
+          <h4><i>Response: </i><%=names[i].response%></h4>
+            </div>
+            <div>
+              <div class="modal" id="replyModal<%= i %>">
+                <div class="modal-content">
+                  <h2>Reply to <%= names[i].name %></h2>
+                  <form action="/Editqueryreply" method="POST">
+                    <input type="hidden" name="name" value="<%= names[i].name %>">
+                    <input type="hidden" name="sub" value="<%= names[i].sub %>">
+                    <input type="hidden" name="description" value="<%=names[i].description%>">
+                    <input type="hidden" name="id" value="<%=names[i].id%>">
+                    <textarea rows="4" cols="50" name="response" id="disvalue"></textarea><br>
+                    <input type="submit" value="Send">
+                  </form>
+                </div>
+              </div>
+              <div class="block">
+              <form action="/Editdelete" method="POST">
+                <input type="hidden" name="id" value="<%=names[i].id%>">
+                <input type="hidden" name="name" value="<%=names[i].name%>">
+                <input type="submit" value="delete">
+      </form>
+              <button class="open-modal-button" data-target="replyModal<%= i %>">Edit</button>
+              </div>
+              <%}%>
+              <% }%>
+            </div>
+          </div>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const openModalButtons = document.querySelectorAll(".open-modal-button");
+            openModalButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+              const targetModalId = button.getAttribute("data-target");
+              const modal = document.getElementById(targetModalId);
+                if (modal) {
+                modal.style.display = modal.style.display === "block" ? "none" : "block";
+              }
+            });
+          });
+        });
+      </script>
+      
+</body>
+</html>

@@ -37,7 +37,8 @@
     input[type="text"],
     input[type="date"],
     input[type="time"],
-    input[type="file"] {
+    input[type="file"],
+    textarea {
         width: 100%;
         padding: 10px;
         margin-bottom: 15px;
@@ -69,8 +70,8 @@
     <div class="p_letter">
         <h2>Permission Request Form</h2>
         <form id="requestForm" method="post" action="/request-form-data-upload" enctype="multipart/form-data">
-            <label for="reason">Reason:</label>
-            <input type="text" id="reason" name="reason" required><br>
+            <label for="reason">Reason:</label><br>
+            <textarea name="reason" id="reason" cols="30" rows="10"></textarea><br>
 
             <label for="date">From Date:</label>
             <input type="date" id="from_date" name="from_date" required><br>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      body{
+        background-color: antiquewhite;
+      }
+      .block{
+        padding-left:100px;
+      }
+      .block1{
+        border:2px solid black;
+        margin-right:150px;
+        padding:10px;
+        margin-bottom:20px;
+      }
+    </style>
+</head>
+<body>
+  <div class="block">
+    <% if(locals.names){%>
+        <% for(var i=0;i<names.length;i++) {%>
+          <div class="block1">
+        <form action="/faculty" method="POST">
+          <h3>Name: <%=names[i].name%></h3>
+          <h3>Department: <%=names[i].dept%></h3>
+          <input type="hidden" name="email" value="<%=names[i].email%>">
+          <input type="submit" value="Request">
+        </form>
+        </div>
+   <% }%>
+      <%}%>
+  </div>
+</body>
+</html>

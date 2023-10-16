@@ -70,10 +70,11 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
     <div class="main">
-        <form action="/login" method="post" id="myform">
+        <form action="/login" method="post" id="myform" class="animate__animated ">
             <div class="profile">
                 <img src="assets/images/profile.png" alt="">
             </div>
@@ -127,6 +128,15 @@
         passInp.addEventListener('input',function(){
             errorMsg.style.display="none";
         });
+        const flag = document.getElementById("Flag");
+        if (flag){
+            function shake(){
+                const form = document.getElementById("myform");
+                form.classList.add("animate__shakeX");
+                console.log("Player Bro")
+            }
+            shake();
+        }
     </script>
 </body>
 </html>

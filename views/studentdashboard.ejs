@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Department Template</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        header{
+            background-color: darkgoldenrod; 
+            padding: 5px;
+            text-align: center;
+            font-size: large;
+            color: white; 
+            height: 120px;
+        }
+        section{ 
+            height: 400px; 
+            display: flex;
+        }
+        nav{
+            flex: 1;
+            background: darkkhaki;
+            min-width: 10%;
+        }
+        nav ul{
+            list-style-type: none; 
+            margin: 0;
+            padding: 0;
+        }
+        li{
+            font-size: 25px;
+        }
+        li a{
+            display: block;
+            padding: 6px 18px;
+            text-decoration: none;
+        }
+        li a:hover{
+            background-color: grey;
+            color: aliceblue;
+        }
+        footer{
+            background-color: darkgoldenrod;
+            padding: 10px;
+            text-align: center;
+            color: white; 
+            height: 100px;
+        }
+        #reply{
+            margin-left:20px;
+            font-size:x-large;
+            text-decoration: none;
+        }
+        /* #loginname{
+            margin-right:10px;
+            float:right;
+        }
+        #logout{
+            float:right;
+            margin-top:50px;
+            margin-right:10px;
+        } */
+
+        .btn {
+            /* background-color: white; */
+            /* color: #333; */
+            float: right;
+            /* padding: 10px 10px; */
+            /* text-decoration: none; */
+            /* border: 2px solid #333; */
+            /* border-radius: 5px; */
+            /* transition: background-color 0.3s ease; */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="btn">
+            <% if(name){%>
+                <p>Welcome, <%= name %>!</p>
+                <a id="logout" href="/logout">Logout</a>
+            <%}%>
+        </div>
+        <h2>Engineering Departments</h2>
+        <h3>Doubts</h3>
+    </header>
+    <section>
+    <nav>
+        <ul>
+            <li><a href="/cse" target="display">CSE</a></li>
+            <li><a href="/ece" target="display">ECE</a></li>
+            <li><a href="/eee" target="display">EEE</a></li>
+            <li><a href="/mech" target="display">MECH</a></li>
+            <li><a href="/civil" target="display">CIVIL</a></li>
+        </ul>
+        <h1><a id="reply" href="/facultyreplies" target="display">replies</a></h1>
+    </nav>
+    <iframe  name="display" width="100%" title="Display Department Information"></iframe>
+    </section>
+    <footer>
+        <p>Email: abc@vishnu.edu.in</p>
+        <p>Phone: 5441164944</p>
+    </footer>
+</body>
+</html>

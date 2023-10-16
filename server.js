@@ -119,14 +119,20 @@ app.post('/login', async (req, res) => {
         Role: docData.Role
       };
       req.session.userData = userData;
-      // if (docData.Role === 'Faculty'){
-      //   res.redirect("/facultymembers"); // ToDo JV Name through session
-      // } else if (docData.Role === 'Student'){
-      //   res.render("maindashboard.ejs"); // ToDo JV Name through session
-      // } else {
+      const name = docData.Name;
+      const session = req.session;
+      if (docData.Role === 'Faculty'){
+        res.redirect("/facultymembers"); // ToDo JV Name through session
+      }
+       else if (docData.Role === 'Student'){
+        res.render("studentdashboard",{name: name}); // ToDo JV Name through session
+      } 
+      // else {
       //   // TODO Dashboard for HOD
       // }
-      res.send("Success");
+      else{
+        res.send("Success");
+      }
     } else {
       res.render('login', {message: 'The Password doesnot match',flag:true});
     }
@@ -135,6 +141,184 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.get("/facultymembers",(req,res)=>{
+  if (req.session.userData) {
+    const name = req.session.userData.Useremail;
+    queries=[];
+    db.collection('Users').doc(req.session.userData.Department).collection(req.session.userData.Department).doc("Faculty").collection("Faculty").doc(req.session.userData.Useremail).collection("doubts").get().then((docs)=>{
+      if(docs.size>0){
+          docs.forEach((doc)=>{
+              queries.push({
+                name:doc.data().name,
+                sub:doc.data().subject,
+                description:doc.data().description,
+                id:doc.data().id
+              })
+          })
+        }
+      res.render("faculty",{names:queries,name:name});
+    })
+  }
+});
+
+app.post("/queryreply",(req,res)=>{
+  if(req.session.userData){
+    const fid = req.session.userData.Useremail;
+    const department = req.session.userData.Department;
+    db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(req.body.name).collection("replies").doc(req.body.id).set({
+      id: req.body.id,
+      name:req.body.name,
+      subject:req.body.sub,
+      description:req.body.description,
+      response:req.body.response,
+      replyfrom:fid,
+    })
+    db.collection('Users').doc(department).collection(department).doc("Faculty").collection("Faculty").doc(req.session.userData.Useremail).collection("replies").doc(req.body.id).set({
+      id: req.body.id,
+      name:req.body.name,
+      subject:req.body.sub,
+      description:req.body.description,
+      response:req.body.response,
+      replyfrom:fid,
+    });
+    db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(req.body.name).collection("doubts").doc(req.body.id).delete();
+    db.collection('Users').doc(department).collection(department).doc("Faculty").collection("Faculty").doc(req.session.userData.Useremail).collection("doubts").doc(req.body.id).delete();
+    res.redirect("/facultymembers");
+  } else {
+    res.send('<script>alert("Please Login."); window.location.href = "/login";</script>');
+  }
+})
+
+app.get("/replies",(req,res)=>{
+  if (req.session.userData) {
+    const dis = [];
+    db.collection('Users').doc(req.session.userData.Department).collection(req.session.userData.Department).doc("Faculty").collection("Faculty").doc(req.session.userData.Useremail).collection("replies").get().then((docs)=>{
+      if(docs.size>0){
+        docs.forEach((doc)=>{
+            dis.push({
+              name:doc.data().name,
+              sub:doc.data().subject,
+              description:doc.data().description,
+              response:doc.data().response,
+              id: doc.data().id
+            })
+        })
+      }
+      res.render("replies.ejs",{
+        names:dis,
+      })
+    })
+  }else{
+    res.redirect('/login');
+  }
+})
+
+function getFacultyByDepartment(req, res, department) {
+  const show = [];
+  db.collection('Users').doc(department).collection(department).doc("Faculty").collection("Faculty").get().then((docs) => {
+    if (docs.size > 0) {
+      docs.forEach((doc) => {
+        show.push({
+          name: doc.data().Name,
+          dept: department,
+          email: doc.data().Email
+        });
+      });
+    }
+    res.render("show", {
+      names: show,
+    });
+  });
+}
+
+app.get("/cse", (req, res) => getFacultyByDepartment(req, res, "CSE"));
+app.get("/ece", (req, res) => getFacultyByDepartment(req, res, "ECE"));
+app.get("/eee", (req, res) => getFacultyByDepartment(req, res, "EEE"));
+app.get("/mech", (req, res) => getFacultyByDepartment(req, res, "ME"));
+app.get("/civil", (req, res) => getFacultyByDepartment(req, res, "CE"));
+
+app.post("/faculty",(req,res)=>{
+  const faculty_mail = req.body.email;
+  res.render("student_doubt",{faculty_mail:faculty_mail});
+})
+
+app.post("/query",(req,res)=>{
+  if (req.session.userData) {
+    const fmail = req.body.fmail;
+    const uniqueId = uuidv4();
+    db.collection('Users').doc(req.session.userData.Department).collection(req.session.userData.Department).doc("Student").collection("Student").doc(req.session.userData.Useremail).collection("doubts").doc(uniqueId).set({
+      id: uniqueId,
+      name:req.session.userData.Useremail,
+      subject:req.body.sub,
+      description:req.body.description,
+    })
+    db.collection('Users').doc(req.session.userData.Department).collection(req.session.userData.Department).doc("Faculty").collection("Faculty").doc(fmail).collection("doubts").doc(uniqueId).set({
+      id:uniqueId,
+      name:req.session.userData.Useremail,
+      subject:req.body.sub,
+      description:req.body.description,
+    })
+    res.send(` 
+    <html> 
+    <head> 
+      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> 
+    </head> 
+    <body> 
+      <script> 
+        swal({ 
+          title: "Success!", 
+          text: "Request sent successfully.", 
+          icon: "success", 
+          button: "OK" 
+        })
+      </script> 
+    </body> 
+    </html> 
+  `);
+  } else {
+    res.send('<script>alert("Please Login."); window.location.href = "/login";</script>');
+  }
+});
+
+app.post("/Editqueryreply",(req,res)=>{
+  if (req.session.userData){
+    const department = req.session.userData.Department;
+    db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(req.body.name).collection("replies").doc(req.body.id).update({
+      response:req.body.response
+    });
+    db.collection('Users').doc(department).collection(department).doc("Faculty").collection("Faculty").doc(req.session.userData.Useremail).collection("replies").doc(req.body.id).update({
+      response:req.body.response,
+    })       
+    res.redirect("/replies");
+  } else {
+    res.redirect("/login")
+  }
+});
+
+app.get("/facultyreplies",(req,res)=>{
+  if (req.session.userData){
+  const replies=[];
+  const department = req.session.userData.Department;
+  db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(req.session.userData.Useremail).collection("replies").get().then((docs)=>{
+    if(docs.size>0){
+        docs.forEach((doc)=>{
+            replies.push({
+              name:doc.data().name,
+              sub:doc.data().subject,
+              description:doc.data().description,
+              response:doc.data().response,
+              replyfrom:doc.data().replyfrom,
+            })
+        })
+      }
+      res.render("facultyreplies.ejs",{
+        names:replies,
+      });
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
 
 
 app.post('/reset-password', async (req,res) => {
@@ -165,8 +349,10 @@ app.post('/reset-password', async (req,res) => {
 
 const departmentToHODMapping = {
   CSE: 'rsraju@vishnu.edu.in',
-  ECE: 'hod-ece@vishnu.edu.in',
-  // TODO: Add more departments and corresponding HOD emails as needed
+  ECE: 'muralik12@vishnu.edu.in',
+  Civil: 'shankardev75@gmail.com',
+  EEE: 'srinivasarao12@vishnu.edu.in',
+  Mech: 'krravi13@vishnu.edu.in'
 };
 
 app.post('/request-form-data-upload', upload.single('documents'), async (req, res) => {
@@ -299,6 +485,28 @@ app.post('/hod-requests/approve', async (req, res) => {
     res.redirect('/hod-requests');
   } else {
     res.send('<script>alert("Please Login as HOD."); window.location.href = "/login";</script>');
+  }
+});
+
+app.post("/delete",(req,res)=>{
+  if (req.session.userData){
+    const department = req.session.userData.Department;
+    db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(req.body.name).collection("doubts").doc(req.body.id).delete();
+    db.collection('Users').doc(department).collection(department).doc("Faculty").collection("Faculty").doc(req.session.userData.Useremail).collection("doubts").doc(req.body.id).delete();
+    res.redirect("/facultymembers");
+  } else {
+    res.send('<script>alert("Please Login."); window.location.href = "/login";</script>');
+  }
+});
+
+app.post("/Editdelete",(req,res)=>{
+  if (req.session.userData){
+    const department = req.session.userData.Department;
+    db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(req.body.name).collection("replies").doc(req.body.id).delete();
+    db.collection('Users').doc(department).collection(department).doc("Faculty").collection("Faculty").doc(req.session.userData.Useremail).collection("replies").doc(req.body.id).delete();
+    res.redirect("/replies");
+  } else{
+    res.send('<script>alert("Please Login."); window.location.href = "/login";</script>');
   }
 });
 
