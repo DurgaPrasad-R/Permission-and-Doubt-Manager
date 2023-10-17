@@ -6,87 +6,171 @@
     <title>HOD Requests</title>
     <style>
         body {
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
+            background-color: #f0f0f0fe;
+            margin: 0;
+            box-sizing: border-box;
+            background-image: url("mountains.jpg");
         }
 
-        .request-list {
-            list-style: none;
+        header {
+            background-color: #0077b6;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin: 0 5vmin;
+            flex-direction: row;
+            justify-content: space-between;
         }
 
-        .request-card {
-            border: 1px solid #ccc;
-            border-radius: 8px;
+        #logout-button {
+            background-color: #f00;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .btn{
+            position: absolute;
+            bottom: 10%;
+        }
+        .fa-solid{
+            font-size: 25px;
+        }
+        #a,#b{
+            text-decoration: none;
+            color: white;
+        }
+        #log{
+            display: flex;
+            flex-direction: column;
+            line-height: 0px;
+        }
+        #log p{
+            font-weight: 600;
+        }
+        #one{
+            padding: 10px 20px;
+        }
+        td a{
+            color: lightblue;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        th, td ,tr{
             padding: 10px;
-            margin: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s;
-            background-color: #ffffff; /* White background */
-            width: 200px;
-            height: 300px;
+            border: 1px solid white !important;
+            color: whitesmoke;
         }
-
-        .request-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        th {
+            background-color: #0077b6;
+            color: #fff;
         }
-
-        .request-details {
+        .table-row {
+            background-color: #fff;
+        }
+        .table-row:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+        .table-row:hover {
+            background-color: #d2d2d2;
+        }
+        #res{
+            color: white;
             padding: 10px;
+            margin: 0px 10px;
+            text-align: center;
+            font-weight: 600;
         }
-
-        .request-details a {
-            color: #e91e63; /* Pink link color */
+        #logout-button{
+            border-radius: 2px;
+            padding: 10px;
+            background-color: #F47458;
+            box-sizing: border-box;
+            padding: 10px 20px;
+            text-decoration: none; 
         }
-
-        .request-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 0;
-            color: #333; /* Dark text color */
+        #login-button{
+            padding: 15px 20px;
+            background-color: #F47458;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 2px;
         }
-
-        .request-description {
-            font-size: 14px;
-            margin: 0;
-            color: #666; /* Gray text color */
+        #title{
+            font-weight: 600;
+            margin-left: 150px;
+        }
+        #ico{
+            display: flex;
+            align-items: center;
         }
     </style>
+    <script src="https://kit.fontawesome.com/72056d3ac9.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>HOD Requests</h1>
-    <ul>
-        <% requests.forEach(request => { %>
-            <li>
-                Regd_no: <%= request.regd_no %><br>
-                Reason: <%= request.reason %><br>
-                <% if (request.from_date === request.to_date) { %>
-                    Date: <%= request.to_date %><br>
-                    From Time: <%= request.from_time %><br>
-                    To Time: <%= request.to_time %>
-                <% } else { %>
-                    From Date: <%= request.from_date %><br>
-                    To Date: <%= request.to_date %><br>
-                <% } %>
-                Document Attached: <% if (request.imgPath) { %>
-                    <a href="<%= request.imgPath %>" target="_blank">View Document</a>
-                <% } else { %>
-                    No document attached
-                <% } %> <br>
-                Status: <%= request.status %>
-                <form action="/hod-requests/approve" method="post">
-                    <input type="hidden" name="requestId" value="<%= request.id %>">
-                    <input type="hidden" name="regd_no" value="<%= request.regd_no %>">
-                    <button type="submit" name="action" value="approve">Approve</button>
-                    <button type="submit" name="action" value="deny">Deny</button>
-                </form>
-                <hr>
-            </li>
-        <% }); %>
-    </ul>
+    <header>
+        <div id="ico"> 
+            <a href="/hod-requests" id="a"><i class="fa-solid fa-house"></i></a>
+        </div>
+        <p id="title"><b>"AcademEase: Student Permissions & Faculty Concerns"</b></p>    
+        <div id="log">
+            <% if(name){%>
+                <p>Welcome, <%= name %>!</p>
+                <a href="/logout" id="logout-button"><b>LOGOUT</b></a>
+            <%}else { %>
+                <a href="/login" id="login-button"><b>LOGIN</b></a>
+            <% } %>
+        </div>
+    </header>
+    <p id="res">HOD Requests</p>
+    <div id="one">
+        <table>
+            <tr>
+                <th>Regd-No</th>
+                <th>Reason</th>
+                <th>From Date</th>
+                <th>To Date</th>
+                <th>From Time</th>
+                <th>To Time</th>
+                <th>Documents</th>
+                <th>Status</th>
+                <th>Approve</th>
+                <th>Deny</th>
+            </tr>
+            <% requests.forEach(request => { %>
+                <tr>
+                    <td><%= request.regd_no %></td>
+                    <td><%= request.reason %></td>
+                    <% if (request.from_date === request.to_date) { %>
+                        <td><%= request.to_date %></td>
+                        <td><%= request.to_date %></td></td>
+                        <td><%= request.from_time %></td>
+                        <td><%= request.to_time %></td>
+                    <% } else { %>
+                        <td><%= request.from_date %></td>
+                        <td><%= request.to_date %></td>
+                    <% } %>
+                    <td><% if (request.imgPath) { %>
+                        <a href="<%= request.imgPath %>" target="_blank">View Document</a></td>
+                    <% } else { %>
+                        <td>No document attached</td>
+                    <% } %>
+                    <td><%= request.status %></td>
+                    <form action="/hod-requests/approve" method="post">
+                        <input type="hidden" name="requestId" value="<%= request.id %>">
+                        <input type="hidden" name="regd_no" value="<%= request.regd_no %>">
+                        <td><button type="submit" name="action" value="approve"><i class="fa-solid fa-check" style="color: #00ff00;"></i></button></td>
+                        <td><button type="submit" name="action" value="deny"><i class="fa-solid fa-xmark" style="color: #ff0000;"></i></button></td>
+                    </form>
+                </tr>
+            <% }); %>
+        </table>
+    </div>
 </body>
 </html>

@@ -5,24 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Permission Request Form</title>
   <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0;
-        padding: 0;
-    }
-
-    h2 {
-        color: #333;
-        text-align: center;
-    }
-
     #requestForm {
-        background-color: #fff;
+        background: transparent;
         max-width: 500px;
+        max-height: 500px;
+        overflow: auto;
         margin: 0 auto;
         padding: 20px;
         border-radius: 5px;
@@ -31,7 +18,12 @@
 
     label {
         font-weight: bold;
+        color: whitesmoke;
         margin-top: 10px;
+    }
+
+    textarea::placeholder{
+        color: white transparent;
     }
 
     input[type="text"],
@@ -45,9 +37,10 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
+        color: white;
     }
 
-    .btn{
+    .sbtn{
         display: flex;
         justify-content: center;
     }
@@ -64,14 +57,27 @@
     button[type="submit"]:hover {
         background-color: #0056b3;
     }
+
+    textarea,input{
+        background: transparent;
+    }
+
+    #res{
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        text-align: center;
+        margin-top: 10px;
+    }
   </style>
 </head>
 <body>
+    <%- include('header',{name:name}); -%>
     <div class="p_letter">
-        <h2>Permission Request Form</h2>
+        <p id="res">Permission Request Form</p>
         <form id="requestForm" method="post" action="/request-form-data-upload" enctype="multipart/form-data">
             <label for="reason">Reason:</label><br>
-            <textarea name="reason" id="reason" cols="30" rows="10"></textarea><br>
+            <textarea name="reason" id="reason" cols="30" rows="4" placeholder="Enter the reason for your permission"></textarea><br>
 
             <label for="date">From Date:</label>
             <input type="date" id="from_date" name="from_date" required><br>
@@ -90,7 +96,7 @@
 
             <label for="documents">Supporting Documents:</label>
             <input type="file" id="documents" name="documents"><br>
-            <div class="btn">
+            <div class="sbtn">
                 <button type="submit">Submit Request</button>
             </div>
         </form>

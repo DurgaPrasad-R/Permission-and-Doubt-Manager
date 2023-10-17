@@ -50,7 +50,12 @@ app.get('/signup', (req, res) => {
 });
 
 app.get('/request-form', (req, res) => {
-  res.sendFile(__dirname + '/public/request_form.html');
+  if (req.session.userData){
+    const name = req.session.userData.Name;
+    res.render('request_form',{name:name});
+  } else {
+    res.redirect('/login');
+  }
 });
 
 app.get('/forgot-password', (req,res) => {
@@ -102,7 +107,7 @@ app.post('/signup', async (req, res) => {
       userDef.Regd_No = req.body.regd_no.toUpperCase();
     }
     await db.collection('Users').doc(department).collection(department).doc(Role).collection(Role).doc(email).set(userDef);
-    res.send("Signup Successful");
+    res.redirect('/dashboard');
   }
 });
 
@@ -128,16 +133,13 @@ app.post('/login', async (req, res) => {
       const name = docData.Name;
       const session = req.session;
       if (docData.Role === 'Faculty'){
-        res.redirect("/facultymembers"); // ToDo JV Name through session
+        res.redirect("/facultymembers");
       }
        else if (docData.Role === 'Student'){
-        res.render("main",{name}); // ToDo JV Name through session
+        res.render("main",{name});
       } 
-      // else {
-      //   // TODO Dashboard for HOD
-      // }
       else{
-        res.send("Success");
+        res.redirect('/hod-requests');
       }
     } else {
       res.render('login', {message: 'The Password doesnot match',flag:true});
@@ -221,22 +223,26 @@ app.get("/replies",(req,res)=>{
 })
 
 function getFacultyByDepartment(req, res, department) {
-  const show = [];
-  db.collection('Users').doc(department).collection(department).doc("Faculty").collection("Faculty").get().then((docs) => {
-    if (docs.size > 0) {
-      docs.forEach((doc) => {
-        show.push({
-          name: doc.data().Name,
-          dept: department,
-          email: doc.data().Email
+  if (req.session.userData){
+    const show = [];
+    db.collection('Users').doc(department).collection(department).doc("Faculty").collection("Faculty").get().then((docs) => {
+      if (docs.size > 0) {
+        docs.forEach((doc) => {
+          show.push({
+            name: doc.data().Name,
+            dept: department,
+            email: doc.data().Email
+          });
         });
+      }
+      const name = req.session.userData.Name;
+      res.render("show", {
+        names: show,name:name
       });
-    }
-    const name = req.session.userData.Name;
-    res.render("show", {
-      names: show,name:name
     });
-  });
+  } else {
+    res.redirect('/login');
+  }
 }
 
 app.get("/cse", (req, res) => getFacultyByDepartment(req, res, "CSE"));
@@ -419,13 +425,11 @@ app.post('/request-form-data-upload', upload.single('documents'), async (req, re
     // Retrieving the HOD email from the mapping
     const hodEmail = departmentToHODMapping[department];
 
-    if (hodEmail) {
-      const hodDocumentRef = db.collection('Users').doc(department).collection(department).doc('HOD').collection('HOD').doc(hodEmail);
-      const hodRequestsRef = hodDocumentRef.collection('requests');
-      hodRequestsRef.doc(uniqueId).set(requestData);
-    }
+    const hodDocumentRef = db.collection('Users').doc(department).collection(department).doc('HOD').collection('HOD').doc(hodEmail);
+    const hodRequestsRef = hodDocumentRef.collection('requests');
+    hodRequestsRef.doc(uniqueId).set(requestData);
 
-    res.send('Success');
+    res.redirect('/home');
   } else {
     res.send('<script>alert("Please Login."); window.location.href = "/login";</script>');
   }
@@ -446,8 +450,8 @@ app.get('/student-requests', async (req, res) => {
       const requestData = doc.data();
       studentRequests.push({ id: doc.id, ...requestData });
     });
-
-    res.render('student_requests', { requests: studentRequests });
+    const name = req.session.userData.Name;
+    res.render('student_requests', { requests: studentRequests , name:name});
   } else {
     res.send('<script>alert("Please Login."); window.location.href = "/login";</script>');
   }
@@ -466,8 +470,8 @@ app.get('/hod-requests', async (req, res) => {
     snapshot.forEach((doc) => {
       requests.push({ id: doc.id, ...doc.data() });
     });
-
-    res.render('hod_requests', { requests });
+    const name = req.session.userData.Name;
+    res.render('hod_requests', { requests , name});
   } else {
     res.send('<script>alert("Please Login as HOD."); window.location.href = "/login";</script>');
   }
