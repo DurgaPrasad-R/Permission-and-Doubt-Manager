@@ -10,15 +10,7 @@
           background-color: #f0f0f0;
           margin: 0;
           padding: 0;
-      }
-      
-      .block {
-        
-          display: flex;
-          flex-wrap: wrap;
-          /* justify-content: center; */
-          padding: 20px;
-          flex-direction: row;
+          background-image: url("mountains.jpg");
       }
       
       .block1 {
@@ -49,25 +41,92 @@
           border: none;
           padding: 10px;
           cursor: pointer;
-          margin-top: 10px;
       }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #ddd;
+        text-align: center;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      th {
+        background-color: #0077b6;
+        color: #fff;
+        padding: 15px;
+        width: 200px;
+      }
+
+      td {
+        padding: 15px;
+        width: 200px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      tr:nth-child(odd) {
+        background-color: #fff;
+      }
+
+      /* Hover effect for table rows */
+      tr:hover {
+        background-color: #d2d2d2;
+        border: none;
+      }
+      .block{
+        display: flex;
+        justify-content: center;
+        margin: 0 auto;
+      }
+      #block2 {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      #myhead{
+        background: transparent;
+      }
+      #nothead{
+        color: whitesmoke;
+        background: transparent;
+      }
+      #list{
+        text-align: center;
+        font-weight: 600;
+        color: white;
+        margin-top: 20px;
+      }
+
   </style>
 </head>
 <body>
   <%- include('header',{name:name}); -%>
+  <p id="list">List of Faculty</p>
   <div class="block">
-    <% if(locals.names){%>
-        <% for(var i=0;i<names.length;i++) {%>
-          <div class="block1">
-        <form action="/faculty" method="POST">
-          <h3>Name: <%=names[i].name%></h3>
-          <h3>Department: <%=names[i].dept%></h3>
-          <input type="hidden" name="email" value="<%=names[i].email%>">
-          <input type="submit" value="Request">
-        </form>
-        </div>
-   <% }%>
-      <%}%>
+    <div id="block2">
+      <table>
+        <tr id="myhead">
+          <th>Name</th>
+          <th>Email</th>
+          <th>Ask a Doubt</th>
+        </tr>
+        <% if (locals.names) { %>
+          <% for (var i = 0; i < names.length; i++) { %>
+            <tr id="nothead">
+              <td><%= names[i].name %></td>
+              <td><%= names[i].email %></td>
+              <td>
+                <form action="/faculty" method="POST">
+                  <input type="hidden" name="email" value="<%= names[i].email %>">
+                  <input type="submit" value="Ask">
+                </form>
+              </td>
+            </tr>
+          <% } %>
+        <% } %>
+      </table>
+    </div>    
   </div>
 </body>
 </html>

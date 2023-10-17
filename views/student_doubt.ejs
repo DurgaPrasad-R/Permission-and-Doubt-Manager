@@ -6,15 +6,15 @@
     <title>Document</title>
     <style>
         body {
-            font-family: Arial, Helvetica, sans-serif;
             background-color: #f4f4f4;
+            background-image: url("mountains.jpg");
         }
   
         .block {
             width: 500px;
-            margin: 0 auto;
+            margin: 20px auto;
             padding: 20px;
-            border: 1px solid #ccc;
+            border: 1px solid #809388;
             border-radius: 5px;
         }
   
@@ -23,46 +23,70 @@
             color: #333;
         }
   
-        form {
-            margin-top: 20px;
-        }
-  
         label {
             display: block;
+            font-weight: 600;
             text-align: left;
-            margin-top: 10px;
+            color: whitesmoke;
         }
   
-        input {
+        input[type=text],textarea{
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #809388;
+            font-size: 20px;
+            border-radius: 5px;
+            margin-top: 5px;
+            color: whitesmoke;
+            background: transparent !important;
+        }
+
+        input:focus{
+            border: 1px solid black;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        input::placeholder,textarea::placeholder{
+            color: lightgray;   
+        }
+
+        textarea{
+            font-size: 20px;
+        }
+  
+        input[type="submit"] {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             margin-top: 5px;
-        }
-  
-        input[type="submit"] {
-            background-color: #333;
+            background-color: #1240B2 !important;
             color: #fff;
             cursor: pointer;
             margin-top: 10px;
         }
   
         input[type="submit"]:hover {
-            background-color: #555;
+            background-color: rgb(6, 6, 151);
+        }
+        #req{
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            font-size: larger;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
     <%- include('header',{name:name}); -%>
     <div class="block">
-        <h2>Request Form</h2>
+        <p id="req">Request Form</p>
         <form action="/query" method="POST">
         <label>Subject: </label><br>
-            <input type="text" name="sub"><br>
+            <input type="text" name="sub" placeholder="Enter the Subject"><br>
             <label>Query:</label><br>
             <input type="hidden" name="fmail" value="<%= faculty_mail %>">
-            <input type="text" name="description"><br>
+            <textarea name="description" cols="20" rows="10" placeholder="Enter your doubt in a detailed way"></textarea>
             <input type="submit" value="Send">
         </form>
     </div>

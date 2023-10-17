@@ -14,7 +14,10 @@
 
         body {
             font-family: 'Bricolage Grotesque', sans-serif;
-            background-color: #01BCE1;
+            background-image: url("mountains.jpg");
+            background-position: center;
+            background-size: cover;
+
         }
 
         .main {
@@ -22,6 +25,7 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
+            
         }
 
         .profile{
@@ -32,11 +36,10 @@
         label,
         input[type=submit] {
             font-weight: 600;
+            color: #809388;
         }
 
-        
-
-        input,select {
+        input,select{
             margin: 10px 0;
             width: 25vmax;
             height: 5vmin;
@@ -44,25 +47,60 @@
             padding: 0 1vmin;
             border-radius: 4px;
             border: 1px solid black;
+            background-color: transparent;
         }
-
-        
+        input::placeholder{
+            color: whitesmoke;
+            font-size: medium;
+        }
         input[type=submit]{
-            background-color: #1240B2;
             color: white;
+            background-color: #1240B2 !important;
+            border: 1px solid black;
             cursor: pointer;
         }
-        
+        #myform {
+            border: 0px solid black;
+            padding: 20px 60px;
+            box-shadow: 0px 0px 5px #1d3b3d;
+            border-radius: 10px;
+        }
+        input{
+            border: none;
+            outline: none;
+            border-bottom: 2px solid #739c96;
+            background-color: transparent !important;
+            color: whitesmoke;
+        }
         .ack{
             display: flex;
             justify-content: center;
         }
+        h1{
+            text-align: center;
+            line-height: 80px;
+
+        }
+        select{
+            color: whitesmoke;
+            outline: none;
+            border: none;
+            border-bottom: 2px solid #739c96;
+            background-color: transparent !important;
+        }
+        select::placeholder{
+            color: #5b959d;
+        }
+        option{
+            background-color: black;
+        }
+        
     </style>
 </head>
 
 <body>
     <div class="main">
-        <form action="/signup" method="post">
+        <form action="/signup" method="post" id="myform">
             <div class="inputs">
                 <label for="name">Enter your name:</label><br>
                 <input type="text" name="Name" id="name" placeholder="Enter your name:" required>
@@ -76,7 +114,6 @@
                 <select name="Role" id="person" required>
                     <option value="Student">Student</option>
                     <option value="Faculty">Faculty</option>
-                    <option value="HOD">HOD</option>
                 </select>
             </div>
             <div class="inputs">

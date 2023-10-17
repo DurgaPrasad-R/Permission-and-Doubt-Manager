@@ -5,102 +5,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #000;
+        max-width: 40%;
+      }
+      #main{
+        display: flex;
+        flex-wrap: wrap;
+      }
       .block{
         display:flex;
+        justify-content: center;
       }
-      form{
-        margin-right:10px;
+      .button1{
+        margin: 0px 10px;
+        width: 80px;
+        color: white;
+        border: none;
+        height: 30px;
+        border-radius: 10px;
       }
-      .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  .modal-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
-    border: 1px solid #000;
-  }
-  header{
-    margin-right:20px;
-    height:10vh;
-    background-color: tomato;
-  }
-  h2{
-    margin-right:10px;
-    float: right;
-  }
-  body{
-    background-color: antiquewhite;
-  }
-  input,button{
-    background-color: #000;
-    color: antiquewhite;
-  }
-  a{
-    margin-top:20px;
-    margin-right:8px;
-    float: right;
-    font-size:larger;
-    text-decoration: none;
-    color:white;
-  }
-  #logout{
-            float:right;
-            margin-top:50px;
-            margin-right:10px;
-        }
+      .open-modal-button{
+        background-color: green;
+      }
+      #button{
+        background-color: red;
+      }
+      #con{
+        display: inline-block;
+        color: white;
+        padding: 10px;
+        margin: 10px 0 0px 550px;
+        font-weight: bold;
+        font-size: 20px;
+      }
+      #responses-button{
+        float: right;
+        border-radius: 2px;
+        margin: 10px 20px 0px 20px;
+        padding: 10px;
+        background-color: #F47458;
+      }
+      #responses-button a{
+        text-decoration: none;
+        color: white;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+        margin: 0px 10vh;
+      }
+      th, td ,tr{
+        padding: 10px;
+        border: 1px solid white !important;
+        color: whitesmoke;
+      }
+      th {
+        background-color: #0077b6;
+        color: #fff;
+      }
+      .table-row {
+        background-color: #fff;
+      }
+      .table-row:nth-child(odd) {
+        background-color: #f2f2f2;
+      }
+      .table-row:hover {
+        background-color: #d2d2d2;
+      }
+      #tags{
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
     </style>
 </head>
 <body>
-  <header>
-    <% if(locals.name){%>
-      <h2 id="loginname"><%=name%></h2>
-<%}%>
-<a id="logout" href="/logout">Logout</a>
-<a href="/replies">Show Responses</a>
-    </header>
+  <%- include('facultyheader',{name:name}); -%>
+  <div class="wait">
+  <div id="con">List of Queries</div>
+  <div id="responses-button">
+    <a href="/replies">View Responses</a>
+  </div>
+</div>
+  <div id="main">
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Subject</th>
+        <th>Description</th>
+        <th>Delete</th>
+        <th>Reply</th>
+      </tr>
   <% if (locals.names) { %>
+
     <% for (var i = 0; i < names.length; i++) { %>
-      <h3><i>Name:</i><%=names[i].name%></h3>
-      <h3><i>Subject: </i> <%=names[i].sub%></h3>
-      <h3><i>Description: </i><%=names[i].description%></h3>
-        </div>
-        <div>
-          <div class="modal" id="replyModal<%= i %>">
-            <div class="modal-content">
-              <h2>Reply to <%= names[i].name %></h2>
-              <form action="/queryreply" method="POST">
-                <input type="hidden" name="name" value="<%= names[i].name %>">
-                <input type="hidden" name="sub" value="<%= names[i].sub %>">
-                <input type="hidden" name="description" value="<%=names[i].description%>">
-                <input type="hidden" name="id" value="<%=names[i].id%>">
-                <textarea rows="4" cols="50" name="response" id="disvalue"></textarea><br>
-                <input type="submit" value="Send">
-              </form>
+      <tr>
+      <div id="doubts">
+        <td><%=names[i].name%></td>
+        <td><%=names[i].sub%></td>
+        <td><%=names[i].description%></td>
+        <div class="modal" id="replyModal<%= i %>">
+          <div class="modal-content">
+            <div id="tags">
+              <div class="reply">Reply to <%= names[i].name %></div>
+              <div class="bin"><a href="/facultymembers"><i class="fa-solid fa-xmark" style="color: #000000;"></i></a></div>
             </div>
+            <form action="/queryreply" method="POST">
+              <input type="hidden" name="name" value="<%= names[i].name %>">
+              <input type="hidden" name="sub" value="<%= names[i].sub %>">
+              <input type="hidden" name="description" value="<%=names[i].description%>">
+              <input type="hidden" name="id" value="<%=names[i].id%>"><br>
+              <textarea rows="4" cols="50" name="response" id="disvalue" required></textarea><br>
+              <input type="submit" value="Send">
+            </form>
           </div>
-          <div class="block">
+        </div>
+        <td><div class="block">
           <form action="/delete" method="POST">
             <input type="hidden" name="name" value="<%=names[i].name%>">
             <input type="hidden" name="id" value="<%=names[i].id%>">
-            <input type="submit" value="delete">
-  </form>
-          <button class="open-modal-button" data-target="replyModal<%= i %>">reply</button>
-          </div>
-          <%}%>
-          <% }%>
-        </div>
+            <input type="submit" value="Delete" class="button1" id="button">
+          </form></td>
+          <td><button class="open-modal-button button1"  data-target="replyModal<%= i %>">Reply</button>
+        </div></td>
       </div>
+        <%}%>
+        <% }%>
+      </table>
+  </div>
  <script>
   document.addEventListener("DOMContentLoaded", function () {
     const openModalButtons = document.querySelectorAll(".open-modal-button");

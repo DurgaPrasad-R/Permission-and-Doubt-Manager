@@ -6,21 +6,79 @@
     <title>Document</title>
     <style>
         body{
-            background-color: antiquewhite;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        #title{
+            color: white;
+            font-weight: 600;
+            margin-left: 150px;
+        }
+        #res{
+            text-align: center;
+            color: white;
+            font-weight: 600;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        th, td ,tr{
+            padding: 10px;
+            border: 1px solid white !important;
+            color: whitesmoke;
+        }
+        th {
+            background-color: #0077b6;
+            color: #fff;
+        }
+        .table-row {
+            background-color: #fff;
+        }
+        .table-row:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+        .table-row:hover {
+            background-color: #d2d2d2;
+        }
+        #mainer{
+            margin: 10px 10vh;
+        }
+        #res{
+            margin: 10px 10px;
         }
     </style>
+    <script src="https://kit.fontawesome.com/72056d3ac9.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <% if(locals.names){%>
-        <div class="block1">
-        <% for(var i=0;i<names.length;i++) {%>
-          <h3>Name: <%=names[i].name%></h3>
-          <h3>Subject: <%=names[i].sub%></h3>
-          <h3>Description: <%=names[i].description%></h3>
-          <h3>Response: <%=names[i].response%></h3>
-          <h3>ReplyFrom: <%=names[i].replyfrom%></h3>
-          </div>
-   <% }%>
-      <%}%>
+    <%- include('header',{name:name}); -%>
+    <p id="res">List of Responses from Faculty</p>
+    
+        <div id="mainer">
+            <table>
+            <tr>
+                <th>Regd-No</th>
+                <th>Subject</th>
+                <th>Description</th>
+                <th>Response</th>
+                <th>From</th>
+            </tr>
+            <% if(locals.names){%>
+                <% for(var i=0;i<names.length;i++) {%>
+                    <tr>
+                        <div id="doubt">
+                            <td><%=names[i].name%></td>
+                            <td><%=names[i].sub%></td>
+                            <td><%=names[i].description%></td>
+                            <td><%=names[i].response%></td>
+                            <td><%=names[i].replyfrom%></td>
+                        </div>
+                    </tr>
+                <% }%>
+            <%}%>
+        </table>
+        </div>
+    
 </body>
 </html>

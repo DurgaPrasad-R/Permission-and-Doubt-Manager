@@ -1,4 +1,4 @@
-const express = require('express')
+const express = require('express');
 const admin = require("firebase-admin");
 const { getFirestore } = require('firebase-admin/firestore');
 const passwordHash = require('password-hash');
@@ -7,8 +7,8 @@ var serviceAccount = require("./Key.json");
 const multer = require('multer');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded());
@@ -38,7 +38,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.get('/dashboard', (req, res) => {
-  res.send('Hurray! Welcome Gig!!');
+  res.render('main',{name:undefined});
 })
 
 app.get('/login', (req, res) => {
@@ -54,7 +54,7 @@ app.get('/request-form', (req, res) => {
 });
 
 app.get('/forgot-password', (req,res) => {
-  res.render('forgot')
+  res.render('forgot');
 });
 
 app.post('/forgot-password', (req,res) => {
@@ -149,13 +149,13 @@ app.post('/login', async (req, res) => {
 
 app.get("/facultymembers",(req,res)=>{
   if (req.session.userData) {
-    const name = req.session.userData.Useremail;
+    const name = req.session.userData.Name;
     queries=[];
     db.collection('Users').doc(req.session.userData.Department).collection(req.session.userData.Department).doc("Faculty").collection("Faculty").doc(req.session.userData.Useremail).collection("doubts").get().then((docs)=>{
       if(docs.size>0){
           docs.forEach((doc)=>{
               queries.push({
-                name:doc.data().name,
+                name:doc.data().name.toUpperCase(),
                 sub:doc.data().subject,
                 description:doc.data().description,
                 id:doc.data().id
@@ -169,9 +169,9 @@ app.get("/facultymembers",(req,res)=>{
 
 app.post("/queryreply",(req,res)=>{
   if(req.session.userData){
-    const fid = req.session.userData.Useremail;
+    const fid = req.session.userData.Name;
     const department = req.session.userData.Department;
-    db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(req.body.name).collection("replies").doc(req.body.id).set({
+    db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(req.body.name.toLowerCase()+"@vishnu.edu.in").collection("replies").doc(req.body.id).set({
       id: req.body.id,
       name:req.body.name,
       subject:req.body.sub,
@@ -198,11 +198,12 @@ app.post("/queryreply",(req,res)=>{
 app.get("/replies",(req,res)=>{
   if (req.session.userData) {
     const dis = [];
+    const name = req.session.userData.Name;
     db.collection('Users').doc(req.session.userData.Department).collection(req.session.userData.Department).doc("Faculty").collection("Faculty").doc(req.session.userData.Useremail).collection("replies").get().then((docs)=>{
       if(docs.size>0){
         docs.forEach((doc)=>{
             dis.push({
-              name:doc.data().name,
+              name:doc.data().name.toUpperCase(),
               sub:doc.data().subject,
               description:doc.data().description,
               response:doc.data().response,
@@ -210,8 +211,8 @@ app.get("/replies",(req,res)=>{
             })
         })
       }
-      res.render("replies.ejs",{
-        names:dis,
+      res.render("replies",{
+        names:dis,name:name
       })
     })
   }else{
@@ -256,13 +257,13 @@ app.post("/query",(req,res)=>{
     const uniqueId = uuidv4();
     db.collection('Users').doc(req.session.userData.Department).collection(req.session.userData.Department).doc("Student").collection("Student").doc(req.session.userData.Useremail).collection("doubts").doc(uniqueId).set({
       id: uniqueId,
-      name:req.session.userData.Useremail,
+      name:req.session.userData.Useremail.substring(0,10),
       subject:req.body.sub,
       description:req.body.description,
     })
     db.collection('Users').doc(req.session.userData.Department).collection(req.session.userData.Department).doc("Faculty").collection("Faculty").doc(fmail).collection("doubts").doc(uniqueId).set({
       id:uniqueId,
-      name:req.session.userData.Useremail,
+      name:req.session.userData.Useremail.substring(0,10),
       subject:req.body.sub,
       description:req.body.description,
     })
@@ -293,7 +294,7 @@ app.post("/query",(req,res)=>{
 app.post("/Editqueryreply",(req,res)=>{
   if (req.session.userData){
     const department = req.session.userData.Department;
-    db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(req.body.name).collection("replies").doc(req.body.id).update({
+    db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(req.body.name+"@vishnu.edu.in").collection("replies").doc(req.body.id).update({
       response:req.body.response
     });
     db.collection('Users').doc(department).collection(department).doc("Faculty").collection("Faculty").doc(req.session.userData.Useremail).collection("replies").doc(req.body.id).update({
@@ -307,13 +308,14 @@ app.post("/Editqueryreply",(req,res)=>{
 
 app.get("/facultyreplies",(req,res)=>{
   if (req.session.userData){
+  const name = req.session.userData.Name;
   const replies=[];
   const department = req.session.userData.Department;
   db.collection('Users').doc(department).collection(department).doc("Student").collection("Student").doc(req.session.userData.Useremail).collection("replies").get().then((docs)=>{
-    if(docs.size>0){
+    if(docs.size>0){  
         docs.forEach((doc)=>{
             replies.push({
-              name:doc.data().name,
+              name:doc.data().name.toUpperCase(),
               sub:doc.data().subject,
               description:doc.data().description,
               response:doc.data().response,
@@ -321,8 +323,8 @@ app.get("/facultyreplies",(req,res)=>{
             })
         })
       }
-      res.render("facultyreplies.ejs",{
-        names:replies,
+      res.render("facultyreplies",{
+        names:replies,name:name
       });
     });
   } else {

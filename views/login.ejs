@@ -13,7 +13,10 @@
 
         body {
             font-family: 'Bricolage Grotesque', sans-serif;
-            background-color: #01BCE1;
+            background-image: url("mountains.jpg");
+            background-position: center;
+            background-size: cover;
+
         }
 
         .main {
@@ -21,6 +24,7 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
+            
         }
 
         .profile{
@@ -30,7 +34,8 @@
 
         label,
         input[type=submit] {
-            font-weight: 600;
+            font-weight: 900;
+            color: #809388;
         }
 
         input,select{
@@ -41,34 +46,54 @@
             padding: 0 1vmin;
             border-radius: 4px;
             border: 1px solid black;
+            background-color: transparent;
         }
-
+        input::placeholder{
+            color: whitesmoke;
+            font-size: medium;
+        }
         input[type=submit]{
-            background-color: #1240B2;
+            background-color: #1240B2 !important;
             color: white;
             border: 1px solid black;
             cursor: pointer;
         }
-
+        input{
+            border: none;
+            outline: none;
+            border-bottom: 2px solid #739c96;
+            background-color: transparent !important;
+            color: whitesmoke;
+        }
         .ack{
             display: flex;
             justify-content: center;
         }
-
-
-        @media (max-width:600px) {
-            .img-1{
-                display: none;
-            }    
-
-            input {
-                margin: 10px 0;
-                width: 40vmax;
-                height: 5vmin;
-                font-size: 2.5vmin;
-                padding: 0 1vmin;
-            }
+        #myform{
+            border: 0px solid black;
+            padding: 20px 60px;
+            box-shadow: 0px 0px 10px #1d3b3d;
+            border-radius: 10px;
         }
+        h1{
+            text-align: center;
+            line-height: 80px;
+
+        }
+        select{
+            color: honeydew;
+            outline: none;
+            border: none;
+            border-bottom: 2px solid #739c96;
+            background-color: transparent !important;
+        }
+        select::placeholder{
+            color: wheat;
+        }
+        option{
+            background-color: black;
+        }
+        
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
@@ -133,7 +158,6 @@
             function shake(){
                 const form = document.getElementById("myform");
                 form.classList.add("animate__shakeX");
-                console.log("Player Bro")
             }
             shake();
         }
